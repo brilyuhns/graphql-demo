@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :comments, :update, :destroy]
+  before_action :ensure_author, only: [:edit, :update, :destroy]
 
   # GET /posts
   # GET /posts.json
@@ -70,6 +71,10 @@ class PostsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_post
       @post = Post.find(params[:id])
+    end
+
+    def ensure_author
+      redirect_to(root_path, notice: "Unauthorized access") unless(current_user && @post.user == current_user)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
